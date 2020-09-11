@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Core.Interfaces;
 using Core.Specifications;
+using AutoMapper;
+using API.Dtos;
 
 namespace API.Controllers
 {
@@ -17,28 +19,36 @@ namespace API.Controllers
         private readonly IGenericRepository<Product> _productsRepo;
         private readonly IGenericRepository<ProductBrand> _productBrandRepo;
         private readonly IGenericRepository<ProductType> _productTypeRepo;
-        public ProductsController(IGenericRepository<Product> productsRepo, IGenericRepository<ProductBrand> productBrandRepo, IGenericRepository<ProductType> productTypeRepo)
+        private readonly IMapper _mapper;
+
+        public ProductsController(IGenericRepository<Product> productsRepo,
+            IGenericRepository<ProductBrand> productBrandRepo,
+            IGenericRepository<ProductType> productTypeRepo,
+            IMapper mapper)
         {
             _productTypeRepo = productTypeRepo;
+            _mapper = mapper;
             _productBrandRepo = productBrandRepo;
             _productsRepo = productsRepo;
         }
 
         [HttpGet()]
-        public async Task<IActionResult> GetProducts()
+        public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts()
         {
             var spec = new ProductsWithTypesAndBrandsSpecification();
             var products = await _productsRepo.ListAsync(spec);
 
-            return Ok(products);
+            return Ok(_mapper.Map<IReadOnlyList<ProductToReturnDto>>(products));
         }
 
         [HttpGet("{productId}")]
-        public async Task<ActionResult<Product>> GetProduct(int productId)
+        public async Task<ActionResult<ProductToReturnDto>> GetProduct(int productId)
         {
             var spec = new ProductsWithTypesAndBrandsSpecification(productId);
             var product = await _productsRepo.GetEntityWithSpec(spec);
-            return product;
+
+            
+            return _mapper.Map<ProductToReturnDto>(product);
         }
 
         [HttpGet("brands")]
