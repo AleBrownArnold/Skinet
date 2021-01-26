@@ -1,16 +1,16 @@
-import { Address } from "cluster";
+import { IAddress } from './address';
 
 export interface IOrderToCreate {
     basketId: string;
     deliveryMethodId: number;
-    shipToAddress: Address;
+    shipToAddress: IAddress;
 }
 
 export interface IOrder {
     id: number;
     buyerEmail: string;
     orderDate: string;
-    shiptToAddress: Address;
+    shiptToAddress: IAddress;
     deliveryMethod: string;
     shippingPrice: number;
     ordertItems: IOrderItem[];

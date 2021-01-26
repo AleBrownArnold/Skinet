@@ -68,7 +68,7 @@ export class BasketService {
   decrementItemQuantity(item: IBasketItem) {
     const basket = this.getCurrentBasketValue();
     const foundItemIndex = basket.items.findIndex(x => x.id === item.id);
-    
+
     if (basket.items[foundItemIndex].quantity > 1) {
       basket.items[foundItemIndex].quantity--;
       this.setBasket(basket);
@@ -80,7 +80,7 @@ export class BasketService {
   removeItemFromBasket(item: IBasketItem) {
     const basket = this.getCurrentBasketValue();
 
-    if(basket.items.some(x => x.id === item.id)) {
+    if (basket.items.some(x => x.id === item.id)) {
       basket.items = basket.items.filter(i => i.id !== item.id);
 
       if (basket.items.length > 0) {
@@ -91,11 +91,15 @@ export class BasketService {
     }
   }
 
+  deleteLocalBasket(basketId: string) {
+    this.basketSource.next(null);
+    this.basketTotalSource.next(null);
+    localStorage.removeItem(basketId);
+  }
+
   deleteBasket(basket: IBasket) {
     return this.http.delete(this.baseUrl + 'basket?id=' + basket.id).subscribe(() => {
-      this.basketSource.next(null);
-      this.basketTotalSource.next(null);
-      localStorage.removeItem('basket_id');
+      this.deleteLocalBasket(basket.id);
     }, error => {
       console.log(error);
     });
@@ -107,7 +111,7 @@ export class BasketService {
     const subtotal = basket.items.reduce((a, b) => (b.price * b.quantity) + a, 0);
     const total = shipping + subtotal;
 
-    this.basketTotalSource.next({shipping, total, subtotal})
+    this.basketTotalSource.next({shipping, total, subtotal});
   }
 
   private addOrUpdateItem(items: IBasketItem[], itemToAdd: IBasketItem, quantity: number): IBasketItem[] {
