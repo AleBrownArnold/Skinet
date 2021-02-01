@@ -27,6 +27,7 @@ export class OrderDetailedComponent implements OnInit {
 
     this.orderService.getOrder(+orderId).subscribe(order => {
       this.order = order;
+      console.log(order);
       this.bcService.set('@orderDetails', 'Order# ' + order.id + ' - ' + order.status);
     }, error => {
       console.log(error);
