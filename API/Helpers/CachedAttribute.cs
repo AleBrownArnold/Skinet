@@ -20,10 +20,10 @@ namespace API.Helpers
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var cachedService = context.HttpContext.RequestServices.GetRequiredService<IResponseCacheService>();
+            var cacheService = context.HttpContext.RequestServices.GetRequiredService<IResponseCacheService>();
 
             var cacheKey = GenerateCacheKeyFromRequest(context.HttpContext.Request);
-            var cacheResponse = await cachedService.GetCacheResponseAsync(cacheKey);
+            var cacheResponse = await cacheService.GetCacheResponseAsync(cacheKey);
 
             if (!string.IsNullOrEmpty(cacheResponse))
             {
@@ -43,7 +43,7 @@ namespace API.Helpers
 
             if (executedContext.Result is OkObjectResult okObjectResult)
             {
-                await cachedService.CacheResponseAsync(cacheKey, okObjectResult.Value, TimeSpan.FromSeconds(_timeToLiveSeconds));
+                await cacheService.CacheResponseAsync(cacheKey, okObjectResult.Value, TimeSpan.FromSeconds(_timeToLiveSeconds));
             }
         }
 
