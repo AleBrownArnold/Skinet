@@ -29,8 +29,8 @@ namespace API.Helpers
             {
                 var contentResult = new ContentResult
                 {
-                    ContentType = "application/json",
                     Content = cacheResponse,
+                    ContentType = "application/json",
                     StatusCode = 200
                 };
 
