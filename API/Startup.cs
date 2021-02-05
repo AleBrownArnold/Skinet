@@ -35,7 +35,7 @@ namespace API
             ConfigureServices(services);
         }
 
-        public void ConfigureProductiontServices(IServiceCollection services)
+        public void ConfigureProductionServices(IServiceCollection services)
         {
             services.AddDbContext<StoreContext>(x =>
                 x.UseMySql(_configuration.GetConnectionString("DefaultConnection")));
